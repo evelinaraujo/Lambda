@@ -6,8 +6,9 @@
             "Action": [
                 "ec2:Describe*",
                 "ec2:CreateTags",
+                "ec2:DescribeTags",
                 "ec2:CreateSnapshot",
-                "ec2:RemoveSnapshot"
+                "ec2:DeleteSnapshot"
             ],
             "Resource": "*"
         },
