@@ -39,16 +39,26 @@ def describe_ec2(event, context):
                                     'ResourceType': "snapshot",
                                     'Tags': [
                                         {
-                                            'Key': 'name',
+                                            'Key': 'Name',
                                             'Value': snapshot_name,
-                                            'Key': 'application',
-                                            'Value': 'core_infrastructure',
+                                        },
+                                        {
+                                             'Key': 'application',
+                                            'Value': 'core_infrastructure'
+                                        },
+                                        {
                                             'Key': 'department',
-                                            'Value': 'infrastructures',
-                                            'Key': 'division',
-                                            'Value': 'technology',
+                                            'Value': 'infrastructures'
+                                        },
+                                        {
+                                             'Key': 'division',
+                                            'Value': 'technology'
+                                        },
+                                        {
                                             'Key': 'environment',
-                                            'Value': 'development' ,
+                                            'Value': 'development'
+                                        },
+                                        {
                                             'Key': 'role',
                                             'Value': 'backup'
 
