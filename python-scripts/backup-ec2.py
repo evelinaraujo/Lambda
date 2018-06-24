@@ -8,33 +8,42 @@ from datetime import datetime, timedelta
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-def describe_ec2(event, context):
+tag_key = 'Name'
+tag_value = 'PnmacInstance'
+def describe_ec2(context, event):
 
     client = boto3.client('ec2')
-    # variable for ec2 instance
+    response = client.describe_instances(
+        Filters=[
+            {
+                'Name' : 'tag:'+tag_key,
+                'Values': [tag_value]
+            }
+        ]
+    )
     
-    ec2_id = ['']
-    
-    # Describe the ec2 instance and grab the ebs volume
-    for id in ec2_id:
-        response = client.describe_instances()
-        for reservation in response['Reservations']:
+    instancelist = response
+    for id in instancelist:
+        for reservation in instancelist['Reservations']:
             for instance in reservation['Instances']:
-                #print(instance)
+                print(instance["InstanceId"])
                 
                 #Grab volume from instance
-                volumes=instance['BlockDeviceMappings']
+    volumes = instance['BlockDeviceMappings']
+
+    # for loop in case instance has more than one volume
                 for volume in volumes:
-                        volume=volume['Ebs']['VolumeId']
+            volume = volume['Ebs']['VolumeId']
                         print("Volume ID for instance ID %s is %s " % (id, volume))
                         date = (datetime.now()).strftime("%F")
-                        snapshot_name="{0}-{1}".format('evelin-test', date)
+            snapshot_name = "{0}-{1}".format('evelin-test', date)
+            
                         #Create snapshot from volume
                         
                         snapshot=client.create_snapshot(
                             Description = "Snapshot for " + id, 
-                            VolumeId=volume,
-                            TagSpecifications=[
+                VolumeId = volume,
+                TagSpecifications = [
                                 {
                                     'ResourceType': "snapshot",
                                     'Tags': [
