@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-
 import logging
 import boto3
 
@@ -58,7 +57,7 @@ def describe_ec2(instance, snapshot):
                             'Value': 'infrastructures'
                         },
                         {
-                                'Key': 'division',
+                            'Key': 'division',
                             'Value': 'technology'
                         },
                         {
