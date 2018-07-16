@@ -10,14 +10,14 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 tag_key='Name'
-tag_value = 'PnmacInstance'
+tag_value = 'Evelin-Test'
 days = 7
 def delete_snapshot(ec2, snapshot):
     client = boto3.client('ec2')
     response = client.describe_snapshots(
         Filters = [
             {
-                'Name': 'tag:'+tag_key,
+                'Name': 'tag:' + tag_key,
                 'Values': [tag_value]
             }
         ]
@@ -25,14 +25,19 @@ def delete_snapshot(ec2, snapshot):
     week_ago_time = (datetime.utcnow() - timedelta(weeks=1)).strftime("%F")
 
     snapshotlist=response
-    for snap in snapshotlist['Snapshots']:
-        snapshot = snap['SnapshotId']
-        time=(snap['StartTime']).strftime("%F")
-        #print(snapshot)
-        if time < week_ago_time:
-            client.delete_snapshot(snapshotId = snapshot)
-            print("Deleting %s" % snapshot)
-            logging.info("%s has been deleted" % snapshot)
-        else:
-            print("Can't delete %s . Time created was %s It hasn't been %s days " % (snapshot,time,days))
-            logging.info("Nothing to remove")
+    if snapshotlist['Snapshots'] == []:
+        print("There are no snapshots with Tag Name %s Please make sure you are using the correct tag value" % tag_value)
+    else:
+        for snap in snapshotlist['Snapshots']:
+            snapshot = snap['SnapshotId']
+            time=(snap['StartTime']).strftime("%F")
+            #print(snapshot)
+            
+            if time < week_ago_time:
+                client.delete_snapshot(SnapshotId = snapshot)
+                print("Deleting %s" % snapshot)
+                logging.info("%s has been deleted" % snapshot)
+                
+            else:
+                print("Can't delete %s . Time created was %s It hasn't been %s days " % (snapshot,time,days))
+                logging.info("Nothing to remove")
